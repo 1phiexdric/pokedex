@@ -1,0 +1,128 @@
+.filter-button{
+    color: #000; /* Color de texto base, ajusta si el fondo es muy claro */
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 0.9em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    text-transform: capitalize;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    display: inline-flex; 
+    align-items: center;
+    justify-content: center;
+    min-width: 80px; 
+}
+
+.filter-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.filter-button.active {
+    filter: brightness(1.2); 
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    border: 2px solid rgba(255, 255, 255, 0.5); 
+}
+
+.normal {
+    background-color: #A8A77A;
+    color: #fff;
+}
+
+.fire {
+    background-color: #EE8130;
+    color: #fff;
+}
+
+.water {
+    background-color: #6390F0;
+    color: #fff;
+}
+
+.grass {
+    background-color: #7AC74C;
+    color: #fff;
+}
+
+.electric {
+    background-color: #F7D02C;
+    color: #fff;
+}
+
+.ice {
+    background-color: #96D9D6;
+    color: #fff;
+}
+
+.fighting {
+    background-color: #C22E28;
+    color: #fff;
+}
+
+.poison {
+    background-color: #A33EA1;
+    color: #fff;
+}
+
+.ground {
+    background-color: #E2BF65;
+    color: #fff;
+}
+
+.flying {
+    background-color: #A98FF3;
+    color: #fff;
+}
+
+.psychic {
+    background-color: #F95587;
+    color: #fff;
+}
+
+.bug {
+    background-color: #A6B91A;
+    color: #fff;
+}
+
+.rock {
+    background-color: #B6A136;
+    color: #fff;
+}
+
+.ghost {
+    background-color: #735797;
+    color: #fff;
+}
+
+.dragon {
+    background-color: #6F35FC;
+    color: #fff;
+}
+
+.steel {
+    background-color: #B7B7CE;
+    color: #fff;
+}
+
+.fairy {
+    background-color: #D685AD;
+    color: #fff;
+}
+
+.dark {
+    background-color: #705746;
+    color: #fff;
+}
+
+.shadow {
+    background-color: #3C3C3C;
+    color: #fff;
+}
+
+.unknown {
+    background-color: #68A090;
+    color: #fff;
+}

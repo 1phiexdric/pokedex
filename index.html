@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Fuentes -->
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=TikTok+Sans:opsz,wght@12..36,300..900&display=swap" rel="stylesheet">
+    <!-- Estilos -->
+<link rel="stylesheet" href="./assets/styles/styles.css">
+<link rel="stylesheet" href="./assets/styles/filtros.css">
+<link rel="stylesheet" href="./assets/styles/details.css">
+    <title>Pokedex</title>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo_container">
+                <img id="logo_img" src="./assets/img/icon.png" alt="" width="50px" >
+                <h2>Pokedex</h2>
+
+            </div>
+            <button class="menu-toggle" id="menuToggle" aria-label="meni-toggle">
+            <span class="hamburger-icon"></span>
+            <span class="hamburger-icon"></span>
+            <span class="hamburger-icon"></span>
+            </button>
+        </div>
+        <nav class="navbar" id="navbar">
+        
+            <div class="search_container">
+            <input type="text" id="search" placeholder="Search Pokemon...">
+            <button id="searchButton">Search</button>
+        </div>
+        <ul class="filtro_tipos_container">
+            <li class="filtro_tipos"><button class="filter-button" id="all" onclick="allfunction()">All</button></li>
+        </ul>
+    </nav>
+    </header>
+    <main>
+    <h1 id="main-title" class="poppins">All Pokemons</h1>
+    <div class="container">
+    </div>
+    <button class="specialBtn" id="showMore">Mostrar mas</button>
+    </main>
+    <script src="main.js"></script>
+    
+</body>
+</html>

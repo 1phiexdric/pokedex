@@ -1,0 +1,238 @@
+/* General Detail View Container */
+.pokemon-detail-view {
+    width: calc(100% - 350px);
+    min-height: 100vh; /* Ocupa toda la altura de la pantalla */
+    margin: 0 0 30px 30px;
+    padding: 2rem 2rem 4rem 2rem; /* Aumentamos el padding inferior para crear espacio */
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    position: absolute;
+    border: 1px solid #ddd;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* Header */
+.detail-header {
+    text-align: center;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+}
+
+.detail-name {
+    font-size: 2.5rem;
+    color: #333;
+    margin: 0;
+    text-transform: capitalize;
+}
+
+.detail-id {
+    font-size: 1.5rem;
+    color: #888;
+    font-weight: bold;
+}
+
+/* Main Content Section */
+.detail-main {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 2rem;
+    align-items: flex-start;
+}
+
+/* Sprites/Images */
+.detail-sprites {
+    text-align: center;
+    margin: 0;
+}
+
+.pokemon-main-image {
+    width: 200px;
+    height: 200px;
+    image-rendering: pixelated; /* For crisp pixel art */
+    background-color: #f9f9f9;
+    border-radius: 50%;
+    border: 5px solid #eee;
+    margin-bottom: 1rem;
+}
+
+.sprite-gallery {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.small-sprite {
+    width: 80px;
+    height: 80px;
+    image-rendering: pixelated;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    border: 3px solid #eee;
+}
+
+/* Info Sections */
+.detail-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.info-section h3 {
+    font-size: 1.2rem;
+    color: #555;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.25rem;
+}
+
+.pokemon-types-detail .type-badge {
+    display: inline-block;
+    padding: 0.5em 1em;
+    margin-right: 0.5em;
+    border-radius: 20px;
+    color: #fff;
+    font-weight: bold;
+    text-transform: capitalize;
+}
+
+.physical-data p, .abilities-section ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.abilities-section ul{
+    display: flex;
+    
+    gap: 20px;
+}
+.abilities-section li {
+    background-color: #f0f0f0;
+    padding: 0.5rem;
+    border-radius: 5px;
+    margin-bottom: 0.5rem;
+    text-transform: capitalize;
+}
+
+/* Footer - Stats */
+.detail-footer {
+    margin-top: 2rem;
+    border-top: 2px solid #f0f0f0;
+    padding-top: 1rem;
+    display: grid;
+}
+
+.detail-footer h3 {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #555;
+    margin-bottom: 1rem;
+}
+.statistics-section{
+    width: 40%;
+    margin: auto;
+}
+.statistics-section .stats-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.statistics-section .stat-item {
+    display: grid;
+    grid-template-columns: 100px 1fr 40px;
+    align-items: center;
+    gap: 1rem;
+}
+
+.statistics-section .stat-name {
+    text-transform: capitalize;
+    font-weight: bold;
+    color: #666;
+    text-align: right;
+}
+
+.statistics-section .stat-bar-container {
+    background-color: #e0e0e0;
+    border-radius: 20px;
+    height: 10px;
+    width: 100%;
+    overflow: hidden;
+}
+
+.statistics-section .stat-bar {
+    background-color: #4caf50; /* Default color, can be changed based on stat value */
+    height: 100%;
+    border-radius: 20px;
+    transition: width 0.5s ease-in-out;
+}
+
+.statistics-section .stat-value {
+    font-weight: bold;
+    color: #333;
+    text-align: left;
+}
+
+/* Back Button */
+.back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    padding: 10px 15px;
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+.back-button:hover {
+    background-color: #5a6268;
+}
+
+/* Responsive Design */
+@media (max-width: 800px) {
+    .pokemon-detail-view{
+        width: 90%;
+        margin: 0;
+    }
+    .detail-name{
+        font-size: 2rem;
+    }
+    .detail-main {
+        grid-template-columns: 1fr;
+    }
+
+    .pokemon-main-image {
+        width: 150px;
+        height: 150px;
+    }
+
+    .small-sprite {
+        width: 60px;
+        height: 60px;
+    }
+
+    .back-button {
+        top: 10px;
+        left: 10px;
+        margin-top: -1px;
+        padding: 1px;
+    }
+    .detail-footer{
+        grid-template-columns: 1fr;
+        margin: 0;
+    }
+    .statistics-section {
+        width: 90%;
+    }
+}
