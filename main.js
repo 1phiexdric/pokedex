@@ -54,16 +54,22 @@ async function obtenerPokemons(url=`https://pokeapi.co/api/v2/pokemon?limit=100`
     const pokemonList = data.results
     
     showMoreButton.style.display = "block"
-    pokemonList.forEach(async(pokemon)=>{
-        const url = pokemon.url
-        const pokemonData = await fetch(url)
-        if (!pokemonData.ok) {
-            throw new Error(`Error: ${pokemonData.status} - ${pokemonData.statusText}`);
+    
+    const pokemonPromises = pokemonList.map(async (pokemon) => {
+        const res = await fetch(pokemon.url);
+        if (!res.ok) {
+            throw new Error(`Error: ${res.status} - ${res.statusText}`);
         }
-        const pokemonInfo = await pokemonData.json()
-        generatePokemonCard(pokemonInfo)
-        
-    })
+        return res.json();
+    });
+
+    const pokemonInfos = await Promise.all(pokemonPromises);
+
+    pokemonInfos.sort((a, b) => a.id - b.id); 
+
+    pokemonInfos.forEach(pokemonInfo => {
+        generatePokemonCard(pokemonInfo);
+    });
 }
 obtenerPokemons()
 
@@ -126,6 +132,7 @@ async function filtertypes(type) {
 function allfunction() {
     allpokemon.innerHTML = ""
     obtenerPokemons()
+    clearClasses()
 }
 
 function generatePokemonCard(info, isSearch = false){
@@ -266,12 +273,6 @@ function clearClasses(){
     menu.classList.remove('active')
     menuToggle.classList.remove('active')
 
-}
-
-async function EvolutionChain(id) {
-    const url = `https://pokeapi.co/api/v2/evolution-chain/${id}/`
-     
-}
 
 //logica para que el nav se cierre al hacer click fuera de el
 document.addEventListener('click', function(event){
@@ -284,3 +285,4 @@ document.addEventListener('click', function(event){
         }
     }
 })
+}
