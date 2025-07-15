@@ -116,17 +116,21 @@ async function filtertypes(type) {
     }
     const data = await response.json();
     const pokemonList = data.pokemon
-    pokemonList.forEach(async (pokemonData) => {
-        const name = pokemonData.pokemon.name;
-        const url = pokemonData.pokemon.url;
-        const pokemonResponse = await fetch(url);
-        if (!pokemonResponse.ok) {
-            throw new Error(`Error: ${pokemonResponse.status} - ${pokemonResponse.statusText}`);
-        }
-        const pokemon = await pokemonResponse.json();
-        
-        generatePokemonCard(pokemon)
-    });
+    const pokemonPromises = pokemonList.map(async (pokemon) => {
+‎        const res = await fetch(pokemon.url);
+‎        if (!res.ok) {
+‎            throw new Error(`Error: ${res.status} - ${res.statusText}`);
+‎        }
+‎        return res.json();
+‎    });
+‎    // esperar a que todas las promesas se terminen y se genera un array
+‎    const pokemonInfos = await Promise.all(pokemonPromises);
+‎    // para ordenar los pokemons de acuerdo a su id
+‎    pokemonInfos.sort((a, b) => a.id - b.id); 
+‎
+‎    pokemonInfos.forEach(pokemonInfo => {
+‎        generatePokemonCard(pokemonInfo);
+‎    });
     showMoreButton.style.display= "none"
     if(mainTitle.style.display == "none"){
 mainTitle.style.display=="block"
