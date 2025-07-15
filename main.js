@@ -128,7 +128,8 @@ async function filtertypes(type) {
         generatePokemonCard(pokemon)
     });
     showMoreButton.style.display= "none"
-    if(main.style.display == "none"){
+    if(mainTitle.style.display == "none"){
+mainTitle.style.display=="block"
 mainTitle.textContent = `Type: ${currentTypeFilter}`
 }       
 
