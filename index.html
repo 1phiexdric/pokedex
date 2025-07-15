@@ -3,6 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Explora la Pokédex, busca Pokémon por nombre, filtra por tipo y descubre sus detalles.">
+    <meta name="keywords" content="Pokédex, Pokémon, tipos, lista de pokémon, buscar pokémon, información pokémon, pokedex online">
+    <meta property="og:title" content="Pokédex Nacional - ¡Encuentra tu Pokémon Favorito!">
+    <meta property="og:description" content="Explora la Pokédex, busca Pokémon por nombre, filtra por tipo y descubre todos sus detalles.">
+    <meta property="og:image" content="https://www.tudominio.com/assets/images/pokedex-social-share.jpg"> <meta property="og:url" content="https://www.tudominio.com/index.html"> <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Pokédex">
+    <meta name="author" content="Friedric Ruiz">
     <!-- Fuentes -->
      <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,17 +18,18 @@
 <link rel="stylesheet" href="./assets/styles/styles.css">
 <link rel="stylesheet" href="./assets/styles/filtros.css">
 <link rel="stylesheet" href="./assets/styles/details.css">
+<link rel="shortcut icon" href="./assets/img/icon.png" type="image/x-icon">
     <title>Pokedex</title>
 </head>
 <body>
     <header>
         <div class="header-content">
             <div class="logo_container">
-                <img id="logo_img" src="./assets/img/icon.png" alt="" width="50px" >
-                <h2>Pokedex</h2>
+                <img id="logo_img" src="./assets/img/icon.png" alt="logo de pokedex" width="50px" >
+                <h1 class="title">Pokedex</h1>
 
             </div>
-            <button class="menu-toggle" id="menuToggle" aria-label="meni-toggle">
+            <button class="menu-toggle" id="menuToggle" aria-label="menu-toggle">
             <span class="hamburger-icon"></span>
             <span class="hamburger-icon"></span>
             <span class="hamburger-icon"></span>
@@ -39,12 +47,12 @@
     </nav>
     </header>
     <main>
-    <h1 id="main-title" class="poppins">All Pokemons</h1>
+    <h2 id="main-title" class="poppins">All Pokemons</h2>
     <div class="container">
     </div>
-    <button class="specialBtn" id="showMore">Mostrar mas</button>
+    <button class="specialBtn" id="showMore">Show more</button>
+    <button class="specialBtn subir" id="subir" title="Go to top">↑</button>
     </main>
     <script src="main.js"></script>
-    
 </body>
 </html>

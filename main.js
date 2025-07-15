@@ -5,6 +5,7 @@ const searchButton = document.getElementById('searchButton')
 const menuToggle = document.getElementById('menuToggle')
 const menu = document.getElementById('navbar')
 const mainTitle = document.getElementById('main-title'); // Elemento del título principal
+const subitBTn = document.getElementById('subir')
 
 let limit
 let offset = 0
@@ -53,8 +54,7 @@ async function obtenerPokemons(url=`https://pokeapi.co/api/v2/pokemon?limit=100`
     const data = await pokemones.json()
     const pokemonList = data.results
     
-    showMoreButton.style.display = "block"
-    
+    // mapear la informacion de los resultados y convertirlos en promesas
     const pokemonPromises = pokemonList.map(async (pokemon) => {
         const res = await fetch(pokemon.url);
         if (!res.ok) {
@@ -62,14 +62,15 @@ async function obtenerPokemons(url=`https://pokeapi.co/api/v2/pokemon?limit=100`
         }
         return res.json();
     });
-
+    // esperar a que todas las promesas se terminen y se genera un array
     const pokemonInfos = await Promise.all(pokemonPromises);
-
+    // para ordenar los pokemons de acuerdo a su id
     pokemonInfos.sort((a, b) => a.id - b.id); 
-
+    
     pokemonInfos.forEach(pokemonInfo => {
         generatePokemonCard(pokemonInfo);
     });
+    showMoreButton.style.display = "block"
 }
 obtenerPokemons()
 
@@ -153,9 +154,11 @@ function generatePokemonCard(info, isSearch = false){
     }
 }
 
-function generatePokemonDetailsTemplate(pokemonData, description){
+async function generatePokemonDetailsTemplate(pokemonData, description){
     try{
-
+        // Usamos await para esperar a que la promesa de getEvolutionChain se resuelva.
+        // Ahora, evolutionChain contendrá el string de HTML directamente, no la promesa.
+        const evolutionChain = await getEvolutionChain(pokemonData.id);
         
         showMoreButton.style.display = 'none';
         const formattedId = String(pokemonData.id).padStart(3, "0");
@@ -184,7 +187,7 @@ function generatePokemonDetailsTemplate(pokemonData, description){
                 <article class="pokemon-detail-view">
                 <button id="back-button" class="back-button specialBtn">&larr; Go back</button>
             <section class="detail-header">
-                <h1 class="detail-name poppins">${pokemonData.name.toUpperCase()}</h1>
+                <h2 class="detail-name poppins">${pokemonData.name.toUpperCase()}</h2>
                 <span class="detail-id">#${formattedId}</span>
             </section>
 
@@ -230,7 +233,12 @@ function generatePokemonDetailsTemplate(pokemonData, description){
                         <h3 class="poppins">Base Statistics</h3>
                         <ul class="stats-list">${statsHtml}</ul>
                     </section>
+
+                    <section class="info-section evolution-chain-section">
+                        <h3 class="poppins">Evolution Chain</h3>
+                        ${evolutionChain}
                     </section>
+            </section>
         </article>
     `;
     }catch(error){
@@ -239,28 +247,35 @@ function generatePokemonDetailsTemplate(pokemonData, description){
 }
 
 async function renderPokemonDetails(pokemonId) {
-     console.log("hasta aqui");
+    // Al mostrar los detalles de un Pokémon, nos aseguramos de que la vista se desplace al principio de la página.
+    // Esto es importante porque si el usuario ha hecho scroll hacia abajo en la lista,
+    // la vista de detalles aparecería a mitad de página, forzando al usuario a subir manualmente.
+    
     const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`);
     const data = await response.json()
     const speciesUrl = data.species.url;
-        const speciesResponse = await fetch(speciesUrl);
-        const speciesData = await speciesResponse.json();
-
-        const flavorTexts = speciesData.flavor_text_entries; 
-
-        let description = flavorTexts.find(entry => entry.language.name === 'en');
-        description = description.flavor_text.replace(/\n/g, ' ').replace(/\f/g, ' ');
-    const datailsTemplate = generatePokemonDetailsTemplate(data, description)
-//${description}
+    const speciesResponse = await fetch(speciesUrl);
+    const speciesData = await speciesResponse.json();
+    
+    const flavorTexts = speciesData.flavor_text_entries; 
+    let description = flavorTexts.find(entry => entry.language.name === 'en');    description = description.flavor_text.replace(/\n/g, ' ').replace(/\f/g, ' ');    // Como generatePokemonDetailsTemplate ahora es asíncrona, esperamos su resultado con await.    const datailsTemplate = await generatePokemonDetailsTemplate(data, description)    //${description}
+    const datailsTemplate = await generatePokemonDetailsTemplate(data, description)
     mainTitle.style.display = "none"
     allpokemon.innerHTML = datailsTemplate;
     const backBtn = document.getElementById('back-button')
     backBtn.addEventListener('click', () => {
         backBtn.parentElement.remove()
-        filtertypes(currentTypeFilter)
-        obtenerPokemons()
         mainTitle.style.display = "block"
+        if(currentTypeFilter){
+            filtertypes(currentTypeFilter)
+            mainTitle.textContent = `Type: ${currentTypeFilter}`
+        }else{
+
+            obtenerPokemons()
+        }
     });
+    goToTop()
+    
 
 }
 
@@ -285,4 +300,98 @@ document.addEventListener('click', function(event){
         }
     }
 })
+}
+
+// subitBTn.addEventListener('click', goToTop)
+
+ subitBTn.addEventListener('click', goToTop)
+
+function goToTop(){
+    // scrollto hace que se desplaze a una seccion en especifico, en este caso no se le pasa
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    })
+}
+
+// Esta función controla la visibilidad del botón para subir al inicio.
+// Se activa cada vez que el usuario hace scroll.
+window.addEventListener('scroll', () => {
+    // Buscamos el botón por su ID dentro de esta función.
+    const subitBtn = document.getElementById('subir');
+
+    // Si el botón no existe en el DOM por alguna razón, salimos para evitar errores.
+    if (!subitBtn) return;
+
+    // Verificamos la posición del scroll vertical.
+    // Si el usuario ha bajado más de 400 píxeles, añadimos la clase 'visible'.
+    // Si está por encima de esa marca, se la quitamos.
+    // Esto hace que el botón aparezca solo cuando es útil.
+    if (window.scrollY > 400) { 
+        subitBtn.classList.add('visible');
+    } else {
+        subitBtn.classList.remove('visible');
+    }
+});
+
+async function getEvolutionChain(pokemonIdOrName) {
+    try {
+        // Paso 1: Obtener la URL de la cadena de evolución
+        const speciesResponse = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${pokemonIdOrName}/`);
+        if (!speciesResponse.ok) throw new Error(`Error al obtener datos de la especie: ${speciesResponse.statusText}`);
+        const speciesData = await speciesResponse.json();
+
+        if (!speciesData.evolution_chain || !speciesData.evolution_chain.url) {
+            console.warn(`No se encontró una cadena de evolución para ${pokemonIdOrName}`);
+            return ''; // Retorna un string vacío si no hay cadena
+        }
+
+        // Paso 2: Obtener los datos de la cadena de evolución
+        const evoChainResponse = await fetch(speciesData.evolution_chain.url);
+        if (!evoChainResponse.ok) throw new Error(`Error al obtener la cadena de evolución: ${evoChainResponse.statusText}`);
+        const evoChainData = await evoChainResponse.json();
+
+        // Paso 3: Recorrer la cadena y recolectar los nombres de los Pokémon
+        let evolutionNames = [];
+        let currentEvolution = evoChainData.chain;
+
+        function traverseEvolution(evolutionNode) {
+            evolutionNames.push(evolutionNode.species.name);
+            if (evolutionNode.evolves_to && evolutionNode.evolves_to.length > 0) {
+                evolutionNode.evolves_to.forEach(nextEvolution => traverseEvolution(nextEvolution));
+            }
+        }
+        
+        traverseEvolution(currentEvolution);
+
+        // Paso 4: Obtener los detalles completos (incluyendo sprites) de cada Pokémon en la cadena
+        const pokemonPromises = evolutionNames.map(name => 
+            fetch(`https://pokeapi.co/api/v2/pokemon/${name}`).then(res => res.json())
+        );
+        const pokemonDetails = await Promise.all(pokemonPromises);
+
+        // Paso 5: Construir la plantilla HTML "cool"
+        const evolutionHtml = pokemonDetails.map((pokemon, index) => {
+            const isLast = index === pokemonDetails.length - 1;
+            
+            const stageHtml = `
+                <div class="evolution-stage">
+                    <img src="${pokemon.sprites.front_default}" alt="${pokemon.name}" class="evolution-sprite">
+                    <p class="evolution-name">${pokemon.name}</p>
+                    <p class="evolution-id">#${String(pokemon.id).padStart(3, '0')}</p>
+                </div>
+            `;
+
+            // Añadir una flecha de evolución si no es el último Pokémon de la cadena
+            const arrowHtml = !isLast ? `<div class="evolution-arrow"><span>&rarr;</span></div>` : '';
+
+            return stageHtml + arrowHtml;
+        }).join('');
+
+        return `<div class="evolution-chain-container">${evolutionHtml}</div>`;
+
+    } catch (error) {
+        console.error('Error al obtener la cadena de evolución:', error);
+        return '<p class="error">Could not load evolution chain.</p>'; // Devuelve un mensaje de error en HTML
+    }
 }
