@@ -144,7 +144,8 @@ function allfunction() {
 }
 
 function generatePokemonCard(info, isSearch = false){
-    const pokemonSprite = info.sprites.front_default;
+    const pokemonSprite = info.sprites.official-artwork.front_default;
+
     const template = `<div class="pokemon" onclick="renderPokemonDetails(${info.id})">
             <img src="${pokemonSprite}" alt="${info.name}" class="pokemon_img">
             <p class="id">ID: #${info.id.toString().padStart(3, "0")}</p>
