@@ -128,6 +128,10 @@ async function filtertypes(type) {
         generatePokemonCard(pokemon)
     });
     showMoreButton.style.display= "none"
+    if(main.style.display == "none"){
+mainTitle.textContent = `Type: ${currentTypeFilter}`
+}       
+
 }
 
 function allfunction() {
