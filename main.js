@@ -35,6 +35,9 @@ async function obtenerInfoTipos(url=`https://pokeapi.co/api/v2/type`) {
                 currentTypeFilter = event.target.dataset.type;
                 clearClasses()
                 filtertypes(element)
+                if(mainTitle.style.display == "none"){
+                    mainTitle.style.display = "block"
+                }
             })
             listaTipos.appendChild(li)
             }
@@ -116,17 +119,21 @@ async function filtertypes(type) {
     }
     const data = await response.json();
     const pokemonList = data.pokemon
-    pokemonList.forEach(async (pokemonData) => {
+    const info = pokemonList.map(async (pokemonData) => {
         const name = pokemonData.pokemon.name;
         const url = pokemonData.pokemon.url;
         const pokemonResponse = await fetch(url);
         if (!pokemonResponse.ok) {
             throw new Error(`Error: ${pokemonResponse.status} - ${pokemonResponse.statusText}`);
         }
-        const pokemon = await pokemonResponse.json();
         
-        generatePokemonCard(pokemon)
+        return pokemonResponse.json();
+        
     });
+    const promise = await Promise.all(info)
+    promise.sort((a, b) => a.id - b.id); 
+    promise.forEach(pokemon=>{
+        generatePokemonCard(pokemon)})
     showMoreButton.style.display= "none"
 }
 
