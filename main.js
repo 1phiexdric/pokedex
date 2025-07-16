@@ -6,12 +6,14 @@ const menuToggle = document.getElementById('menuToggle')
 const menu = document.getElementById('navbar')
 const mainTitle = document.getElementById('main-title'); // Elemento del título principal
 const subitBTn = document.getElementById('subir')
+const footer = document.getElementsByTagName('footer')[0];
+
 
 let limit
 let offset = 0
 let currentTypeFilter = null;
-async function obtenerInfoTipos(url=`https://pokeapi.co/api/v2/type`) {
-    try{
+async function obtenerInfoTipos(url = `https://pokeapi.co/api/v2/type`) {
+    try {
         const llamada = await fetch(url)
         if (!llamada.ok) {
             throw new Error(`Error: ${llamada.status} - ${llamada.statusText}`);
@@ -22,33 +24,30 @@ async function obtenerInfoTipos(url=`https://pokeapi.co/api/v2/type`) {
             // Se añade una condición para excluir los tipos "unknown" y "stellar".
             // El tipo "stellar" es una mecánica de teracristalización y no tiene una lista de Pokémon asociada en la API,
             // por lo que el filtro no funcionaría y es mejor ocultarlo.
-            if(element !== "unknown" && element !== "stellar"){
+            if (element !== "unknown" && element !== "stellar") {
                 const li = document.createElement("li");
-            li.className = "filtro_tipos"
-            const filterButton = document.createElement("button")
-            filterButton.className = "filter-button"
-            filterButton.textContent = element
-            filterButton.classList.add(element)
-            li.appendChild(filterButton)
-            filterButton.addEventListener('click', (event) => {
-                allpokemon.innerHTML = ""
-                currentTypeFilter = event.target.dataset.type;
-                clearClasses()
-                filtertypes(element)
-                if(mainTitle.style.display == "none"){
-                    mainTitle.style.display = "block"
-                }
-            })
-            listaTipos.appendChild(li)
+                li.className = "filtro_tipos"
+                const filterButton = document.createElement("button")
+                filterButton.className = "filter-button"
+                filterButton.textContent = element.toUpperCase()
+                filterButton.classList.add(element)
+                li.appendChild(filterButton)
+                filterButton.addEventListener('click', (event) => {
+                    allpokemon.innerHTML = ""
+                    currentTypeFilter = event.target.dataset.type;
+                    clearClasses()
+                    filtertypes(element)
+                })
+                listaTipos.appendChild(li)
             }
         });
-    }catch(error){
+    } catch (error) {
         console.error("NO se puedo obtener informacion del pokemon:", error)
     }
 }
 obtenerInfoTipos()
 
-async function obtenerPokemons(url=`https://pokeapi.co/api/v2/pokemon?limit=100`) {
+async function obtenerPokemons(url = `https://pokeapi.co/api/v2/pokemon?limit=100`) {
     mainTitle.textContent = 'All Pokemons'; // Actualiza el título a "All Pokemons"
     const pokemones = await fetch(url)
     if (!pokemones.ok) {
@@ -56,7 +55,7 @@ async function obtenerPokemons(url=`https://pokeapi.co/api/v2/pokemon?limit=100`
     }
     const data = await pokemones.json()
     const pokemonList = data.results
-    
+
     // mapear la informacion de los resultados y convertirlos en promesas
     const pokemonPromises = pokemonList.map(async (pokemon) => {
         const res = await fetch(pokemon.url);
@@ -68,8 +67,8 @@ async function obtenerPokemons(url=`https://pokeapi.co/api/v2/pokemon?limit=100`
     // esperar a que todas las promesas se terminen y se genera un array
     const pokemonInfos = await Promise.all(pokemonPromises);
     // para ordenar los pokemons de acuerdo a su id
-    pokemonInfos.sort((a, b) => a.id - b.id); 
-    
+    pokemonInfos.sort((a, b) => a.id - b.id);
+
     pokemonInfos.forEach(pokemonInfo => {
         generatePokemonCard(pokemonInfo);
     });
@@ -77,19 +76,20 @@ async function obtenerPokemons(url=`https://pokeapi.co/api/v2/pokemon?limit=100`
 }
 obtenerPokemons()
 
-showMoreButton.addEventListener('click', (url)=>{
+showMoreButton.addEventListener('click', (url) => {
     if (currentTypeFilter) {
         filtertypes(currentTypeFilter);
-        
+
     } else {
         // Si no hay filtro, carga más pokemones normales
         offset += 100;
         obtenerPokemons(`https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=50`);
-    }})
+    }
+})
 
 
 async function buscarUnPokemon(name) {
-    try{
+    try {
         mainTitle.textContent = `Results for: ${name}` // Actualiza el título con el término de búsqueda
         showMoreButton.style.display = "none";
         const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${name.toLowerCase()}`);
@@ -99,12 +99,12 @@ async function buscarUnPokemon(name) {
         clearClasses()
         const pokemon = await response.json()
         generatePokemonCard(pokemon, true);
-    }catch(err){
+    } catch (err) {
         alert("Pokemon no encontrado, por favor verifica el nombre")
     }
 }
 
-searchButton.addEventListener('click',()=>{
+searchButton.addEventListener('click', () => {
     const searchInput = document.getElementById("search").value
     showMoreButton.disabled = true;
     buscarUnPokemon(searchInput)
@@ -126,48 +126,51 @@ async function filtertypes(type) {
         if (!pokemonResponse.ok) {
             throw new Error(`Error: ${pokemonResponse.status} - ${pokemonResponse.statusText}`);
         }
-        
+
         return pokemonResponse.json();
-        
+
     });
     const promise = await Promise.all(info)
-    promise.sort((a, b) => a.id - b.id); 
-    promise.forEach(pokemon=>{
-        generatePokemonCard(pokemon)})
-    showMoreButton.style.display= "none"
+    promise.sort((a, b) => a.id - b.id);
+    promise.forEach(pokemon => {
+        generatePokemonCard(pokemon)
+    })
+    showMoreButton.style.display = "none"
 }
 
 function allfunction() {
     allpokemon.innerHTML = ""
+
     obtenerPokemons()
     clearClasses()
 }
 
-function generatePokemonCard(info, isSearch = false){
-    const pokemonSprite = info.sprites.front_default;
+function generatePokemonCard(info, isSearch = false) {
+    const pokemonSprite = info.sprites.other["official-artwork"].front_default;
     const template = `<div class="pokemon" onclick="renderPokemonDetails(${info.id})">
             <img src="${pokemonSprite}" alt="${info.name}" class="pokemon_img">
             <p class="id">ID: #${info.id.toString().padStart(3, "0")}</p>
-            <h3>${info.name}</h3>
+            <h3>${info.name.toUpperCase()}</h3>
             <ul class="pokemon_types">
                 ${info.types.map(type => `<li class="pokemon_type ${type.type.name}">${type.type.name}</li>`).join('')}
             </ul>
         </div>`
-    
-    if(isSearch){
+
+    if (isSearch) {
         allpokemon.innerHTML = template
-    }else{
+    } else {
         allpokemon.insertAdjacentHTML("beforeend", template);
     }
 }
 
-async function generatePokemonDetailsTemplate(pokemonData, description){
-    try{
+async function generatePokemonDetailsTemplate(pokemonData, description) {
+    try {
         // Usamos await para esperar a que la promesa de getEvolutionChain se resuelva.
         // Ahora, evolutionChain contendrá el string de HTML directamente, no la promesa.
         const evolutionChain = await getEvolutionChain(pokemonData.id);
-        
+
         showMoreButton.style.display = 'none';
+
         const formattedId = String(pokemonData.id).padStart(3, "0");
         const typesHtml = pokemonData.types.map(typeInfo => `
             <span class="type-badge ${typeInfo.type.name}">${typeInfo.type.name}</span>
@@ -175,7 +178,7 @@ async function generatePokemonDetailsTemplate(pokemonData, description){
         const abilitiesHtml = pokemonData.abilities.map(abilityInfo => `
             <li>${abilityInfo.ability.name.replace(/-/g, ' ')}</li>
             `).join('');
-            const statsHtml = pokemonData.stats.map(statInfo => {
+        const statsHtml = pokemonData.stats.map(statInfo => {
             const statValue = statInfo.base_stat;
             const maxStat = 255; // Max possible stat value for scaling
             const statPercentage = (statValue / maxStat) * 100;
@@ -189,8 +192,8 @@ async function generatePokemonDetailsTemplate(pokemonData, description){
                 </li>
             `;
         }).join('');
-                
-                return `
+
+        return `
                 <article class="pokemon-detail-view">
                 <button id="back-button" class="back-button specialBtn">&larr; Go back</button>
             <section class="detail-header">
@@ -201,10 +204,9 @@ async function generatePokemonDetailsTemplate(pokemonData, description){
             <section class="detail-main">
                 <figure class="detail-sprites">
                 
-                <img src="${pokemonData.sprites.front_default}" alt="${pokemonData.name}" class="pokemon-main-image">
+                <img src="${pokemonData.sprites.other["official-artwork"].front_default}" alt="${pokemonData.name}" class="pokemon-main-image">
                     <figcaption class="sprite-gallery">
-                        ${pokemonData.sprites.front_shiny ? `<img src="${pokemonData.sprites.front_shiny}" alt="${pokemonData.name} shiny" class="small-sprite">` : ''}
-                        ${pokemonData.sprites.back_default ? `<img src="${pokemonData.sprites.back_default}" alt="${pokemonData.name} back" class="small-sprite">` : ''}
+                        ${pokemonData.sprites.front_shiny ? `<img src="${pokemonData.sprites.other["official-artwork"].front_shiny}" alt="${pokemonData.name} shiny" class="small-sprite">` : ''}
                     </figcaption>
                 </figure>
 
@@ -248,7 +250,7 @@ async function generatePokemonDetailsTemplate(pokemonData, description){
             </section>
         </article>
     `;
-    }catch(error){
+    } catch (error) {
         console.error("error " + error)
     }
 }
@@ -257,15 +259,15 @@ async function renderPokemonDetails(pokemonId) {
     // Al mostrar los detalles de un Pokémon, nos aseguramos de que la vista se desplace al principio de la página.
     // Esto es importante porque si el usuario ha hecho scroll hacia abajo en la lista,
     // la vista de detalles aparecería a mitad de página, forzando al usuario a subir manualmente.
-    
+    footer.style.display = "none"
     const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`);
     const data = await response.json()
     const speciesUrl = data.species.url;
     const speciesResponse = await fetch(speciesUrl);
     const speciesData = await speciesResponse.json();
-    
-    const flavorTexts = speciesData.flavor_text_entries; 
-    let description = flavorTexts.find(entry => entry.language.name === 'en');    description = description.flavor_text.replace(/\n/g, ' ').replace(/\f/g, ' ');    // Como generatePokemonDetailsTemplate ahora es asíncrona, esperamos su resultado con await.    const datailsTemplate = await generatePokemonDetailsTemplate(data, description)    //${description}
+
+    const flavorTexts = speciesData.flavor_text_entries;
+    let description = flavorTexts.find(entry => entry.language.name === 'en'); description = description.flavor_text.replace(/\n/g, ' ').replace(/\f/g, ' ');    // Como generatePokemonDetailsTemplate ahora es asíncrona, esperamos su resultado con await.    const datailsTemplate = await generatePokemonDetailsTemplate(data, description)    //${description}
     const datailsTemplate = await generatePokemonDetailsTemplate(data, description)
     mainTitle.style.display = "none"
     allpokemon.innerHTML = datailsTemplate;
@@ -273,47 +275,53 @@ async function renderPokemonDetails(pokemonId) {
     backBtn.addEventListener('click', () => {
         backBtn.parentElement.remove()
         mainTitle.style.display = "block"
-        if(currentTypeFilter){
+        if (currentTypeFilter) {
             filtertypes(currentTypeFilter)
             mainTitle.textContent = `Type: ${currentTypeFilter}`
-        }else{
-
+        } else {
+            clearClasses()
             obtenerPokemons()
         }
     });
     goToTop()
-    
+
 
 }
 
-menuToggle.addEventListener("click", ()=>{
+menuToggle.addEventListener("click", () => {
     menu.classList.toggle('active')
     menuToggle.classList.toggle('active')
 })
 
-function clearClasses(){
+function clearClasses() {
     menu.classList.remove('active')
     menuToggle.classList.remove('active')
 
-
+    if (mainTitle.style.display == "none") {
+        mainTitle.style.display = "block"
+    }
+    if (footer.style.display == "none") {
+        footer.style.display = "block"
+    }
+    
+}
 //logica para que el nav se cierre al hacer click fuera de el
-document.addEventListener('click', function(event){
-    if(menu.classList.contains('active')){
+document.addEventListener('click', function (event) {
+    if (menu.classList.contains('active')) {
         // verificamos en que elemento se hico click
         const isClickInsideMenu = menu.contains(event.target)
         const isClickONToggleButton = menuToggle.contains(event.target)
-        if(menu.classList.contains('active') && !isClickInsideMenu && !isClickONToggleButton){
+        if (menu.classList.contains('active') && !isClickInsideMenu && !isClickONToggleButton) {
             clearClasses()
         }
     }
 })
-}
 
 // subitBTn.addEventListener('click', goToTop)
 
- subitBTn.addEventListener('click', goToTop)
+subitBTn.addEventListener('click', goToTop)
 
-function goToTop(){
+function goToTop() {
     // scrollto hace que se desplaze a una seccion en especifico, en este caso no se le pasa
     window.scrollTo({
         top: 0,
@@ -334,7 +342,7 @@ window.addEventListener('scroll', () => {
     // Si el usuario ha bajado más de 400 píxeles, añadimos la clase 'visible'.
     // Si está por encima de esa marca, se la quitamos.
     // Esto hace que el botón aparezca solo cuando es útil.
-    if (window.scrollY > 400) { 
+    if (window.scrollY > 400) {
         subitBtn.classList.add('visible');
     } else {
         subitBtn.classList.remove('visible');
@@ -368,11 +376,11 @@ async function getEvolutionChain(pokemonIdOrName) {
                 evolutionNode.evolves_to.forEach(nextEvolution => traverseEvolution(nextEvolution));
             }
         }
-        
+
         traverseEvolution(currentEvolution);
 
         // Paso 4: Obtener los detalles completos (incluyendo sprites) de cada Pokémon en la cadena
-        const pokemonPromises = evolutionNames.map(name => 
+        const pokemonPromises = evolutionNames.map(name =>
             fetch(`https://pokeapi.co/api/v2/pokemon/${name}`).then(res => res.json())
         );
         const pokemonDetails = await Promise.all(pokemonPromises);
@@ -380,10 +388,10 @@ async function getEvolutionChain(pokemonIdOrName) {
         // Paso 5: Construir la plantilla HTML "cool"
         const evolutionHtml = pokemonDetails.map((pokemon, index) => {
             const isLast = index === pokemonDetails.length - 1;
-            
+
             const stageHtml = `
-                <div class="evolution-stage">
-                    <img src="${pokemon.sprites.front_default}" alt="${pokemon.name}" class="evolution-sprite">
+                <div class="evolution-stage" onclick="renderPokemonDetails(${pokemon.id})">
+                    <img src="${pokemon.sprites.other["official-artwork"].front_default}" alt="${pokemon.name}" class="evolution-sprite">
                     <p class="evolution-name">${pokemon.name}</p>
                     <p class="evolution-id">#${String(pokemon.id).padStart(3, '0')}</p>
                 </div>

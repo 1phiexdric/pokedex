@@ -56,11 +56,11 @@
 .pokemon-main-image {
     width: 200px;
     height: 200px;
-    image-rendering: pixelated; /* For crisp pixel art */
     background-color: #f9f9f9;
     border-radius: 50%;
-    border: 5px solid #eee;
+    border: 3px solid #eee;
     margin-bottom: 1rem;
+    padding: 10px;
 }
 
 .sprite-gallery {
@@ -72,7 +72,6 @@
 .small-sprite {
     width: 80px;
     height: 80px;
-    image-rendering: pixelated;
     background-color: #f9f9f9;
     border-radius: 10px;
     border: 3px solid #eee;
@@ -228,6 +227,9 @@
     border: 1px solid #eee;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
+.error{
+    text-align: center;
+}
 
 .evolution-stage:hover {
     transform: translateY(-5px);
@@ -235,9 +237,8 @@
 }
 
 .evolution-sprite {
-    width: 96px; /* Standard size for sprites */
-    height: 96px;
-    image-rendering: pixelated;
+    width: 100px; /* Standard size for sprites */
+    height: 100px;
 }
 
 .evolution-name {
@@ -302,10 +303,7 @@
         gap: 5px;
         align-items: center;
     }
-    .evolution-stage:hover {
-    transform: translateY(0);
-    box-shadow: none;
-}
+
     
 }
 
@@ -316,4 +314,8 @@
     .evolution-arrow{
         transform: rotate(90deg);
     }
+        .evolution-stage:hover {
+    transform: translateY(0);
+    box-shadow: none;
+}
 }

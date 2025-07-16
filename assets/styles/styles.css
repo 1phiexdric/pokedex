@@ -11,6 +11,9 @@
 
 body {
     background-color: #f0f2f5; 
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 header {
@@ -119,6 +122,7 @@ nav ul {
 }
 
 main {
+    flex-grow: 1; /* Permite que el main ocupe el espacio restante */
     margin-left:270px;
     padding: 20px; 
 }
@@ -279,4 +283,15 @@ header{
     .menu-toggle.active .hamburger-icon:nth-child(3) {
         transform: translateY(-8px) rotate(-45deg);
     }
+}
+
+/* Footer Styles */
+/* Se asegura de que el footer ocupe todo el ancho y tenga un fondo y borde consistentes. */
+.footer {
+    background-color: #fff; /* Fondo blanco como el header */
+    color: #333; /* Color de texto oscuro para contraste */
+    text-align: center; /* Centrar el texto */
+    padding: 20px; /* Relleno para dar espacio */
+    border-top: 1px solid #ddd; /* Borde superior para separar del contenido */
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.1); /* Sombra para dar profundidad */
 }
