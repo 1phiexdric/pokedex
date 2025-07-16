@@ -151,6 +151,7 @@ function generatePokemonCard(info, isSearch = false) {
             <img src="${pokemonSprite}" alt="${info.name}" class="pokemon_img">
             <p class="id">ID: #${info.id.toString().padStart(3, "0")}</p>
             <h3>${info.name.toUpperCase()}</h3>
+            <h3>${info.name.toUpperCase()}</h3>
             <ul class="pokemon_types">
                 ${info.types.map(type => `<li class="pokemon_type ${type.type.name}">${type.type.name}</li>`).join('')}
             </ul>
