@@ -151,7 +151,6 @@ function generatePokemonCard(info, isSearch = false) {
             <img src="${pokemonSprite}" alt="${info.name}" class="pokemon_img">
             <p class="id">ID: #${info.id.toString().padStart(3, "0")}</p>
             <h3>${info.name.toUpperCase()}</h3>
-            <h3>${info.name.toUpperCase()}</h3>
             <ul class="pokemon_types">
                 ${info.types.map(type => `<li class="pokemon_type ${type.type.name}">${type.type.name}</li>`).join('')}
             </ul>
@@ -268,7 +267,8 @@ async function renderPokemonDetails(pokemonId) {
     const speciesData = await speciesResponse.json();
 
     const flavorTexts = speciesData.flavor_text_entries;
-    let description = flavorTexts.find(entry => entry.language.name === 'en'); description = description.flavor_text.replace(/\n/g, ' ').replace(/\f/g, ' ');    // Como generatePokemonDetailsTemplate ahora es asíncrona, esperamos su resultado con await.    const datailsTemplate = await generatePokemonDetailsTemplate(data, description)    //${description}
+    let description = flavorTexts.find(entry => entry.language.name === 'en'); description = description.flavor_text.replace(/\n/g, ' ').replace(/\f/g, ' ');   
+     // Como generatePokemonDetailsTemplate ahora es asíncrona, esperamos su resultado con await.
     const datailsTemplate = await generatePokemonDetailsTemplate(data, description)
     mainTitle.style.display = "none"
     allpokemon.innerHTML = datailsTemplate;
@@ -393,7 +393,7 @@ async function getEvolutionChain(pokemonIdOrName) {
             const stageHtml = `
                 <div class="evolution-stage" onclick="renderPokemonDetails(${pokemon.id})">
                     <img src="${pokemon.sprites.other["official-artwork"].front_default}" alt="${pokemon.name}" class="evolution-sprite">
-                    <p class="evolution-name">${pokemon.name}</p>
+                    <p class="evolution-name">${pokemon.name.toUpperCase()}</p>
                     <p class="evolution-id">#${String(pokemon.id).padStart(3, '0')}</p>
                 </div>
             `;
