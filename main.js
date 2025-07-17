@@ -8,6 +8,7 @@ const mainTitle = document.getElementById('main-title'); // Elemento del título
 const subitBTn = document.getElementById('subir')
 const footer = document.getElementsByTagName('footer')[0];
 
+let preloaderIntervalId
 
 let limit
 let offset = 0
@@ -49,6 +50,7 @@ obtenerInfoTipos()
 
 async function obtenerPokemons(url = `https://pokeapi.co/api/v2/pokemon?limit=100`) {
     mainTitle.textContent = 'All Pokemons'; // Actualiza el título a "All Pokemons"
+    showPreloader()
     const pokemones = await fetch(url)
     if (!pokemones.ok) {
         throw new Error(`Error: ${pokemones.status} - ${pokemones.statusText}`);
@@ -72,9 +74,10 @@ async function obtenerPokemons(url = `https://pokeapi.co/api/v2/pokemon?limit=10
     pokemonInfos.forEach(pokemonInfo => {
         generatePokemonCard(pokemonInfo);
     });
+    hidePreloader()
     showMoreButton.style.display = "block"
 }
-obtenerPokemons()
+
 
 showMoreButton.addEventListener('click', (url) => {
     if (currentTypeFilter) {
@@ -90,17 +93,22 @@ showMoreButton.addEventListener('click', (url) => {
 
 async function buscarUnPokemon(name) {
     try {
-        mainTitle.textContent = `Results for: ${name}` // Actualiza el título con el término de búsqueda
+        showPreloader()
         showMoreButton.style.display = "none";
         const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${name.toLowerCase()}`);
         if (!response.ok) {
             throw new Error(`Error: ${response.status} - ${response.statusText}`);
         }
+        if(name.length != ""){
+            mainTitle.textContent = `Results for: ${name}`
+        } 
         clearClasses()
         const pokemon = await response.json()
         generatePokemonCard(pokemon, true);
+        hidePreloader(200)
     } catch (err) {
-        alert("Pokemon no encontrado, por favor verifica el nombre")
+        hidePreloader()
+        mostrarNotificacion("Pokemon no encontrado, por favor verifica el nombre.", "red", 3000)
     }
 }
 
@@ -110,6 +118,7 @@ searchButton.addEventListener('click', () => {
     buscarUnPokemon(searchInput)
 })
 async function filtertypes(type) {
+    showPreloader()
     mainTitle.textContent = `Type: ${type}`; // Actualiza el título con el tipo de Pokémon filtrado
     currentTypeFilter = type
     const url = `https://pokeapi.co/api/v2/type/${type}`;
@@ -128,13 +137,13 @@ async function filtertypes(type) {
         }
 
         return pokemonResponse.json();
-
     });
     const promise = await Promise.all(info)
     promise.sort((a, b) => a.id - b.id);
     promise.forEach(pokemon => {
         generatePokemonCard(pokemon)
     })
+    hidePreloader()
     showMoreButton.style.display = "none"
 }
 
@@ -411,3 +420,31 @@ async function getEvolutionChain(pokemonIdOrName) {
         return '<p class="error">Could not load evolution chain.</p>'; // Devuelve un mensaje de error en HTML
     }
 }
+
+ function mostrarNotificacion(mensaje, color, segundos) {
+     const notificacion = document.getElementById("notificacion");
+     notificacion.textContent = mensaje;
+     notificacion.style.display = "block";
+     notificacion.style.color = color;
+     notificacion.style.zIndex = '10000'
+     let x= segundos
+     setTimeout(() => {
+         notificacion.style.display = "none";
+     }, x); // Oculta después de 3 segundos
+ }
+
+ function showPreloader(){
+    const preloaderDiv = document.getElementById("preloader")
+    preloaderDiv.classList.add('active')
+ }
+ 
+ function hidePreloader(time=0){
+     const preloaderDiv = document.getElementById("preloader")
+     setTimeout(()=>{
+        preloaderDiv.classList.remove('active')
+    }, time)
+  }
+
+ document.addEventListener('DOMContentLoaded', ()=>{
+    obtenerPokemons()
+ })

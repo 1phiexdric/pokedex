@@ -215,6 +215,51 @@ main {
     visibility: visible; /* Lo hace accesible */
 }
 
+#notificacion {
+    display: none; 
+    position: fixed;
+    top: 50%;
+    left: 50%; 
+    transform: translate(-50%, -50%);
+    z-index: 10000;
+    background-color: white;
+    padding: 20px 15px;
+    border-radius: 10px; 
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25); 
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 500; 
+    min-width: 300px; 
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+#preloader {
+    /* Mantiene las propiedades de posicionamiento y tamaño */
+    position: fixed;
+    z-index: 100;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    border: 1px solid black;
+    background-color: rgb(250, 250, 250, 0.98);
+    /* para la transicion */
+    opacity: 0;           
+    visibility: hidden;   
+    transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out; /* Agrega la transición */
+
+}
+#preloader.active{
+    opacity: 1;           /* Cuando está activo, se hace visible */
+    visibility: visible; 
+}
+.preloader_img{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-height: 400px;
+}
 @media (width < 800px){
     main {
     margin:0;
